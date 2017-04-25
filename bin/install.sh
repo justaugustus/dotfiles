@@ -24,69 +24,76 @@ setup_sources() {
 		apt-transport-https \
 		ca-certificates \
 		curl \
+		software-properties-common \
 		dirmngr \
 		--no-install-recommends
 
-	cat <<-EOF > /etc/apt/sources.list
-	deb http://httpredir.debian.org/debian stretch main contrib non-free
-	deb-src http://httpredir.debian.org/debian/ stretch main contrib non-free
+	#cat <<-EOF > /etc/apt/sources.list
+	#deb http://httpredir.debian.org/debian stretch main contrib non-free
+	#deb-src http://httpredir.debian.org/debian/ stretch main contrib non-free
 
-	deb http://httpredir.debian.org/debian/ stretch-updates main contrib non-free
-	deb-src http://httpredir.debian.org/debian/ stretch-updates main contrib non-free
+	#deb http://httpredir.debian.org/debian/ stretch-updates main contrib non-free
+	#deb-src http://httpredir.debian.org/debian/ stretch-updates main contrib non-free
 
-	deb http://security.debian.org/ stretch/updates main contrib non-free
-	deb-src http://security.debian.org/ stretch/updates main contrib non-free
+	#deb http://security.debian.org/ stretch/updates main contrib non-free
+	#deb-src http://security.debian.org/ stretch/updates main contrib non-free
 
-	#deb http://httpredir.debian.org/debian/ jessie-backports main contrib non-free
-	#deb-src http://httpredir.debian.org/debian/ jessie-backports main contrib non-free
+	##deb http://httpredir.debian.org/debian/ jessie-backports main contrib non-free
+	##deb-src http://httpredir.debian.org/debian/ jessie-backports main contrib non-free
 
-	deb http://httpredir.debian.org/debian experimental main contrib non-free
-	deb-src http://httpredir.debian.org/debian experimental main contrib non-free
+	#deb http://httpredir.debian.org/debian experimental main contrib non-free
+	#deb-src http://httpredir.debian.org/debian experimental main contrib non-free
 
 	# hack for latest git (don't judge)
-	deb http://ppa.launchpad.net/git-core/ppa/ubuntu wily main
-	deb-src http://ppa.launchpad.net/git-core/ppa/ubuntu wily main
+	#deb http://ppa.launchpad.net/git-core/ppa/ubuntu wily main
+	#deb-src http://ppa.launchpad.net/git-core/ppa/ubuntu wily main
 
 	# neovim
-	deb http://ppa.launchpad.net/neovim-ppa/unstable/ubuntu wily main
-	deb-src http://ppa.launchpad.net/neovim-ppa/unstable/ubuntu wily main
+	#deb http://ppa.launchpad.net/neovim-ppa/unstable/ubuntu wily main
+	#deb-src http://ppa.launchpad.net/neovim-ppa/unstable/ubuntu wily main
+	sudo add-apt-repository -y ppa:neovim-ppa/stable
 
 	# yubico
-	deb http://ppa.launchpad.net/yubico/stable/ubuntu wily main
-	deb-src http://ppa.launchpad.net/yubico/stable/ubuntu wily main
+	#deb http://ppa.launchpad.net/yubico/stable/ubuntu wily main
+	#deb-src http://ppa.launchpad.net/yubico/stable/ubuntu wily main
 
 	# tlp: Advanced Linux Power Management
 	# http://linrunner.de/en/tlp/docs/tlp-linux-advanced-power-management.html
-	deb http://repo.linrunner.de/debian sid main
-	EOF
+	#deb http://repo.linrunner.de/debian sid main
+	#EOF
 
 	# add docker apt repo
-	cat <<-EOF > /etc/apt/sources.list.d/docker.list
-	deb https://apt.dockerproject.org/repo debian-stretch main
-	deb https://apt.dockerproject.org/repo debian-stretch testing
-	deb https://apt.dockerproject.org/repo debian-stretch experimental
-	EOF
+	#cat <<-EOF > /etc/apt/sources.list.d/docker.list
+	#deb https://apt.dockerproject.org/repo debian-stretch main
+	#deb https://apt.dockerproject.org/repo debian-stretch testing
+	#deb https://apt.dockerproject.org/repo debian-stretch experimental
+	#EOF
+	sudo add-apt-repository -y \
+		"deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+		$(lsb_release -cs) \
+		stable"
 
 	# Add the Cloud SDK distribution URI as a package source
-	echo "deb https://packages.cloud.google.com/apt cloud-sdk-sid main" > /etc/apt/sources.list.d/google-cloud-sdk.list
+	echo "deb https://packages.cloud.google.com/apt cloud-sdk-xenial main" > /etc/apt/sources.list.d/google-cloud-sdk.list
 
 	# Import the Google Cloud Platform public key
 	curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 
 	# Add the Google Chrome distribution URI as a package source
-	echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
+	#echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
 
 	# Import the Google Chrome public key
-	curl https://dl.google.com/linux/linux_signing_key.pub | apt-key add -
+	#curl https://dl.google.com/linux/linux_signing_key.pub | apt-key add -
 
 	# add docker gpg key
-	apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+	#apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 
 	# add the git-core ppa gpg key
-	apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys E1DD270288B4E6030699E45FA1715D88E1DF1F24
+	#apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys E1DD270288B4E6030699E45FA1715D88E1DF1F24
 
 	# add the neovim ppa gpg key
-	apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 9DBB0BE9366964F134855E2255F96FCF8231B6DD
+	#apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 9DBB0BE9366964F134855E2255F96FCF8231B6DD
 
 	# add the yubico ppa gpg key
 	apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 3653E21064B19D134466702E43D5C49532CBA1A9
@@ -194,7 +201,7 @@ setup_sudo() {
 
 	# add go path to secure path
 	{ \
-		echo -e 'Defaults	secure_path="/usr/local/go/bin:/home/jessie/.go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"'; \
+		echo -e 'Defaults	secure_path="/usr/local/go/bin:/home/augustus/.go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"'; \
 		echo -e 'Defaults	env_keep += "ftp_proxy http_proxy https_proxy no_proxy GOPATH EDITOR"'; \
 		echo -e "${USERNAME} ALL=(ALL) NOPASSWD:ALL"; \
 		echo -e "${USERNAME} ALL=NOPASSWD: /sbin/ifconfig, /sbin/ifup, /sbin/ifdown, /sbin/ifquery"; \
@@ -203,37 +210,38 @@ setup_sudo() {
 	# setup downloads folder as tmpfs
 	# that way things are removed on reboot
 	# i like things clean but you may not want this
-	mkdir -p "/home/$USERNAME/Downloads"
-	echo -e "\n# tmpfs for downloads\ntmpfs\t/home/${USERNAME}/Downloads\ttmpfs\tnodev,nosuid,size=2G\t0\t0" >> /etc/fstab
+	#mkdir -p "/home/$USERNAME/Downloads"
+	#echo -e "\n# tmpfs for downloads\ntmpfs\t/home/${USERNAME}/Downloads\ttmpfs\tnodev,nosuid,size=2G\t0\t0" >> /etc/fstab
 }
 
 # installs docker master
 # and adds necessary items to boot params
 install_docker() {
 	# create docker group
-	sudo groupadd docker
+	#sudo groupadd docker
+
+	#curl -sSL https://get.docker.com/builds/Linux/x86_64/docker-latest.tgz | tar -xvz \
+	#	-C /usr/local/bin --strip-components 1
+	sudo apt-get install docker-ce
+	chmod +x /usr/bin/docker*
+
 	sudo gpasswd -a "$USERNAME" docker
 
+	#curl -sSL https://raw.githubusercontent.com/justaugustus/dotfiles/master/etc/systemd/system/docker.service > /etc/systemd/system/docker.service
+	#curl -sSL https://raw.githubusercontent.com/justaugustus/dotfiles/master/etc/systemd/system/docker.socket > /etc/systemd/system/docker.socket
 
-	curl -sSL https://get.docker.com/builds/Linux/x86_64/docker-latest.tgz | tar -xvz \
-		-C /usr/local/bin --strip-components 1
-	chmod +x /usr/local/bin/docker*
-
-	curl -sSL https://raw.githubusercontent.com/jessfraz/dotfiles/master/etc/systemd/system/docker.service > /etc/systemd/system/docker.service
-	curl -sSL https://raw.githubusercontent.com/jessfraz/dotfiles/master/etc/systemd/system/docker.socket > /etc/systemd/system/docker.socket
-
-	systemctl daemon-reload
-	systemctl enable docker
+	#systemctl daemon-reload
+	#systemctl enable docker
 
 	# update grub with docker configs and power-saving items
-	sed -i.bak 's/GRUB_CMDLINE_LINUX=""/GRUB_CMDLINE_LINUX="cgroup_enable=memory swapaccount=1 pcie_aspm=force apparmor=1 security=apparmor"/g' /etc/default/grub
-	echo "Docker has been installed. If you want memory management & swap"
-	echo "run update-grub & reboot"
+	#sed -i.bak 's/GRUB_CMDLINE_LINUX=""/GRUB_CMDLINE_LINUX="cgroup_enable=memory swapaccount=1 pcie_aspm=force apparmor=1 security=apparmor"/g' /etc/default/grub
+	#echo "Docker has been installed. If you want memory management & swap"
+	#echo "run update-grub & reboot"
 }
 
 # install/update golang from source
 install_golang() {
-	export GO_VERSION=1.7.4
+	export GO_VERSION=1.8.1
 	export GO_SRC=/usr/local/go
 
 	# if we are passing the version
@@ -364,7 +372,7 @@ install_graphics() {
 # install custom scripts/binaries
 install_scripts() {
 	# install acsciinema
-	curl -sSL https://asciinema.org/install | sh
+	#curl -sSL https://asciinema.org/install | sh
 
 	# install speedtest
 	curl -sSL https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py  > /usr/local/bin/speedtest
@@ -456,7 +464,7 @@ get_dotfiles() {
 	cd "$HOME"
 
 	# install dotfiles from repo
-	git clone git@github.com:jessfraz/dotfiles.git "${HOME}/dotfiles"
+	git clone git@github.com:augustus/dotfiles.git "${HOME}/dotfiles"
 	cd "${HOME}/dotfiles"
 
 	# installs all the things
@@ -481,8 +489,28 @@ install_vim() {
 	(
 	cd "$HOME"
 
+	# install things needed for deoplete for vim
+	sudo apt-get update
+
+	sudo apt-get install -y neovim
+
+	sudo apt-get install -y \
+		python-dev \
+		python-pip \
+		python3-dev \
+		python3-pip \
+		--no-install-recommends
+
+	pip install --upgrade pip
+	pip3 install --upgrade pip
+
+	pip3 install -U \
+		setuptools \
+		wheel #\
+		#neovim
+
 	# install .vim files
-	git clone --recursive git@github.com:jessfraz/.vim.git "${HOME}/.vim"
+	git clone --recursive git@github.com:justaugustus/.vim.git "${HOME}/.vim"
 	ln -snf "${HOME}/.vim/vimrc" "${HOME}/.vimrc"
 	sudo ln -snf "${HOME}/.vim" /root/.vim
 	sudo ln -snf "${HOME}/.vimrc" /root/.vimrc
@@ -503,50 +531,41 @@ install_vim() {
 	sudo update-alternatives --config vim
 	sudo update-alternatives --install /usr/bin/editor editor "$(which nvim)" 60
 	sudo update-alternatives --config editor
-
-	# install things needed for deoplete for vim
-	sudo apt-get update
-
-	sudo apt-get install -y \
-		python3-pip \
-		--no-install-recommends
-
-	pip3 install -U \
-		setuptools \
-		wheel \
-		neovim
 	)
 }
 
 install_virtualbox() {
+	. /etc/lsb-release
+
 	# check if we need to install libvpx1
-	PKG_OK=$(dpkg-query -W --showformat='${Status}\n' libvpx1 | grep "install ok installed")
-	echo "Checking for libvpx1: $PKG_OK"
-	if [ "" == "$PKG_OK" ]; then
-		echo "No libvpx1. Installing libvpx1."
-		jessie_sources=/etc/apt/sources.list.d/jessie.list
-		echo "deb http://httpredir.debian.org/debian jessie main contrib non-free" > "$jessie_sources"
+	#PKG_OK=$(dpkg-query -W --showformat='${Status}\n' libvpx1 | grep "install ok installed")
+	#echo "Checking for libvpx1: $PKG_OK"
+	#if [ "" == "$PKG_OK" ]; then
+	#	echo "No libvpx1. Installing libvpx1."
+	#	jessie_sources=/etc/apt/sources.list.d/jessie.list
+	#	echo "deb http://httpredir.debian.org/debian jessie main contrib non-free" > "$jessie_sources"
 
-		apt-get update
-		apt-get install -y -t jessie libvpx1 \
-			--no-install-recommends
+	#	apt-get update
+	#	apt-get install -y -t jessie libvpx1 \
+	#		--no-install-recommends
 
-		# cleanup the file that we used to install things from jessie
-		rm "$jessie_sources"
-	fi
+	#	# cleanup the file that we used to install things from jessie
+	#	rm "$jessie_sources"
+	#fi
 
-	echo "deb http://download.virtualbox.org/virtualbox/debian vivid contrib" >> /etc/apt/sources.list.d/virtualbox.list
+	echo "deb http://download.virtualbox.org/virtualbox/debian ${DISTRIB_CODENAME} contrib" > /etc/apt/sources.list.d/virtualbox.list
 
-	curl -sSL https://www.virtualbox.org/download/oracle_vbox.asc | apt-key add -
+	curl -sSL https://www.virtualbox.org/download/oracle_vbox_2016.asc | apt-key add -
 
 	apt-get update
 	apt-get install -y \
-		virtualbox-5.0
-	--no-install-recommends
+		virtualbox-5.1 \
+		dkms \
+		--no-install-recommends
 }
 
 install_vagrant() {
-	VAGRANT_VERSION=1.8.1
+	VAGRANT_VERSION=1.9.4
 
 	# if we are passing the version
 	if [[ ! -z "$1" ]]; then
@@ -554,12 +573,12 @@ install_vagrant() {
 	fi
 
 	# check if we need to install virtualbox
-	PKG_OK=$(dpkg-query -W --showformat='${Status}\n' virtualbox | grep "install ok installed")
-	echo "Checking for virtualbox: $PKG_OK"
-	if [ "" == "$PKG_OK" ]; then
-		echo "No virtualbox. Installing virtualbox."
+	#PKG_OK=$(dpkg-query -W --showformat='${Status}\n' virtualbox | grep "install ok installed")
+	#echo "Checking for virtualbox: $PKG_OK"
+	#if [ "" == "$PKG_OK" ]; then
+		#echo "No virtualbox. Installing virtualbox."
 		install_virtualbox
-	fi
+	#fi
 
 	tmpdir=$(mktemp -d)
 	(
@@ -626,6 +645,8 @@ main() {
 	elif [[ $cmd == "syncthing" ]]; then
 		install_syncthing
 	elif [[ $cmd == "vagrant" ]]; then
+		check_is_sudo
+
 		install_vagrant "$2"
 	else
 		usage
